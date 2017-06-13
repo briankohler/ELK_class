@@ -1,0 +1,9 @@
+.vagrant/*
+elasticsearch/es01/data/es-lab/*
+elasticsearch/es01/plugins/*
+elasticsearch/es02/data/es-lab/*
+elasticsearch/es02/plugins/*
+elasticsearch/es03/data/es-lab/*
+elasticsearch/es03/plugins/*
+
+

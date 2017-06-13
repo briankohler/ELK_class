@@ -1,0 +1,38 @@
+--- 
+action.destructive_requires_name: true
+bootstrap.mlockall: true
+cluster.name: es-lab
+cluster.routing.allocation.node_concurrent_recoveries: 5
+cluster.routing.allocation.node_initial_primaries_recoveries: 1
+discovery.zen.minimum_master_nodes: 2
+discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.timeout: "30s"
+discovery.zen.ping.unicast.hosts: "es01,es03"
+network.host: _eth0_
+gateway.expected_nodes: 2
+gateway.recover_after_nodes: 2
+gateway.recover_after_time: "1m"
+index.number_of_replicas: 1
+index.number_of_shards: 2
+index.translog.flush_threshold_ops: 5000
+index.unassigned.node_left.delayed_timeout: "5m"
+indicies.fielddata.cache.size: "10%"
+memory.index_buffer_size: "10%"
+merge.policy.merge_factor: 30
+node.name: es02
+path.data:
+  - /usr/share/elasticsearch/data
+path.logs: /var/log/elasticsearch
+recovery.concurrent_streams: 7
+recovery.max_bytes_per_sec: "100mb"
+refresh_interval: "5s"
+script.groovy.sandbox.enabled: false
+threadpool.bulk.queue_size: 700
+threadpool.bulk.type: fixed
+threadpool.get.queue_size: 200
+threadpool.get.type: fixed
+threadpool.index.queue_size: 700
+threadpool.index.type: fixed
+threadpool.search.queue_size: 600
+threadpool.search.type: fixed
+

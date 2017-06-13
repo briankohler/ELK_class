@@ -1,0 +1,74 @@
+version: '2'
+
+services:
+  es01:
+    image: elasticsearch:2.4
+    volumes:
+      - "/vagrant/elasticsearch/es01.yaml:/usr/share/elasticsearch/config/elasticsearch.yml:rw"
+      - "/vagrant/elasticsearch/es01/plugins:/usr/share/elasticsearch/plugins:rw"
+      - "/vagrant/elasticsearch/es01/data:/opt/es_data:rw"
+      - "/vagrant/elasticsearch/logstash_indexer_es01.conf:/etc/logstash/conf.d/logstash.conf:ro"
+      - "/logstash-2.4.0_all.deb:/logstash-2.4.0_all.deb:ro"
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - docker_elk
+  es02:
+    image: elasticsearch:2.4
+    volumes:
+      - "/vagrant/elasticsearch/es02.yaml:/usr/share/elasticsearch/config/elasticsearch.yml:rw"
+      - "/vagrant/elasticsearch/es02/plugins:/usr/share/elasticsearch/plugins:rw"
+      - "/vagrant/elasticsearch/es02/data:/opt/es_data:rw"
+      - "/vagrant/elasticsearch/logstash_indexer_es02.conf:/etc/logstash/conf.d/logstash.conf:ro"
+      - "/logstash-2.4.0_all.deb:/logstash-2.4.0_all.deb:ro"
+    cap_add:
+      - IPC_LOCK
+    links:
+      - es01
+    networks:
+      - docker_elk
+  es03:
+    image: elasticsearch:2.4
+    volumes:
+      - "/vagrant/elasticsearch/es03.yaml:/usr/share/elasticsearch/config/elasticsearch.yml:rw"
+      - "/vagrant/elasticsearch/es03/plugins:/usr/share/elasticsearch/plugins:rw"
+      - "/vagrant/elasticsearch/es03/data:/opt/es_data:rw"
+      - "/vagrant/elasticsearch/logstash_indexer_es03.conf:/etc/logstash/conf.d/logstash.conf:ro"
+      - "/logstash-2.4.0_all.deb:/logstash-2.4.0_all.deb:ro"
+    links:
+      - es02
+      - es01
+    cap_add:
+      - IPC_LOCK
+    networks:
+      - docker_elk
+  kibana:
+    image: kibana:4.6.4
+    environment:
+      - 'ELASTICSEARCH_URL=http://loadbalancer:9200'
+    ports:
+      - '5601:5601'
+    links:
+      - loadbalancer
+    networks:
+      - docker_elk
+  loadbalancer:
+    image: haproxy:1.7.2
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+      - '6379:6379'
+      - '1936:1936'
+    links:
+      - es01
+      - es02
+      - es03
+    networks:
+      - docker_elk
+    volumes:
+      - "/vagrant/elasticsearch/haproxy.conf:/usr/local/etc/haproxy/haproxy.cfg:ro"
+
+networks:
+  docker_elk:
+    driver: bridge
+
